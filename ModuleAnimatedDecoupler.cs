@@ -19,7 +19,9 @@ namespace AnimatedDecoupler
 		public string animationName;
 
 		protected Animation[] anims;
-		protected bool animationComplete;
+
+		[KSPField(isPersistant = true)]
+		public bool animationComplete = false;
 
 		public ModuleAnimatedDecoupler ():
 		base()
@@ -28,20 +30,27 @@ namespace AnimatedDecoupler
 
 		public override void OnStart (StartState state)
 		{
-			print ("ModuleAnimatedDecoupler.OnStart(), isDecoupled = " + isDecoupled.ToString ());
+			Debug.log ("ModuleAnimatedDecoupler.OnStart(), isDecoupled = " + isDecoupled.ToString ());
 			anims = part.FindModelAnimators(animationName);
 			if (anims == null || anims.Length == 0)
 			{
-				print ("ModuleAnimatedDecoupler: Animations not found");
+				Debug.log ("ModuleAnimatedDecoupler: Animations not found");
+			}
+			else
+			{
+				if (animationComplete)
+				{
+					anims[0][animationName].normalizedTime = 1f;
+				}
 			}
 			base.OnStart (state);
 		}
 
 		public override void OnActive()
 		{
-			print ("ModuleAnimatedDecoupler.OnActive() start; isDecoupled = " + this.isDecoupled.ToString ());
+			Debug.log ("ModuleAnimatedDecoupler.OnActive() start; isDecoupled = " + this.isDecoupled.ToString ());
 			base.OnActive ();
-			print ("ModuleAnimatedDecoupler.OnActive() finished; isDecoupled = " + this.isDecoupled.ToString ());
+			Debug.log ("ModuleAnimatedDecoupler.OnActive() finished; isDecoupled = " + this.isDecoupled.ToString ());
 			if (this.isDecoupled && (object)anims != null && !animationComplete) 
 			{
 				try
