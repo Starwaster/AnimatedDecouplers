@@ -59,6 +59,7 @@ namespace AnimatedDecoupler
 				{
 					this.anim.Play (animationName);
 					this.animationComplete = true;
+					this.isDecoupled = true;
 					Debug.Log ("ModuleAnimatedDecoupler.onStageSeparation() triggered animation " + this.animationName);
 				}
 			}

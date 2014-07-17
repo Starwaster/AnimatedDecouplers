@@ -42,10 +42,10 @@ namespace AnimatedDecouplers
 			else
 			{
 				Debug.Log ("ModuleAnimatedDecoupler.OnStart() - Animation found named " + animationName);
-				if (animationComplete)
+				if (this.animationComplete || this.isDecoupled)
 				// If Decoupled or animation already played then set animation to end.
 				{
-					anim[animationName].normalizedTime = 1f;
+					this.anim[animationName].normalizedTime = 1f;
 				}
 			}
 		}
@@ -58,6 +58,8 @@ namespace AnimatedDecouplers
 				if (!this.animationComplete || !this.anim.IsPlaying (animationName))
 				{
 					this.anim.Play (animationName);
+					this.animationComplete = true;
+					this.isDecoupled = true;
 					Debug.Log ("ModuleAnimatedDecoupler.onStageSeparation() triggered animation " + this.animationName);
 				}
 			}
