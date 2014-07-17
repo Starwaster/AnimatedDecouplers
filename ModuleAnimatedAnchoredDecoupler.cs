@@ -22,7 +22,7 @@ namespace AnimatedDecouplers
 		protected Animation anim;
 		
 		[KSPField(isPersistant = true)]
-		public bool animationComplete;
+		public bool animationComplete = false;
 		
 		public ModuleAnimatedAnchoredDecoupler ():
 		base()
@@ -31,6 +31,8 @@ namespace AnimatedDecouplers
 
 		public override void OnStart (StartState state)
 		{
+			GameEvents.onStageSeparation.Add (checkForDecoupling);
+			base.OnStart (state);
 			Debug.Log ("ModuleAnimatedAnchoredDecoupler.OnStart(), isDecoupled = " + isDecoupled.ToString ());
 			anim = part.FindModelAnimators(animationName).FirstOrDefault ();
 			if ((object)anim == null)
@@ -39,13 +41,13 @@ namespace AnimatedDecouplers
 			}
 			else
 			{
+				Debug.Log ("ModuleAnimatedDecoupler.OnStart() - Animation found named " + animationName);
 				if (animationComplete)
+				// If Decoupled or animation already played then set animation to end.
 				{
 					anim[animationName].normalizedTime = 1f;
 				}
-				GameEvents.onStageSeparation.Add (checkForDecoupling);
 			}
-			base.OnStart (state);
 		}
 
 		public void checkForDecoupling(EventReport separationData)
@@ -56,32 +58,37 @@ namespace AnimatedDecouplers
 				if (!this.animationComplete || !this.anim.IsPlaying (animationName))
 				{
 					this.anim.Play (animationName);
-					print ("ModuleAnimatedDecoupler.onStageSeparation() triggered animation " + this.animationName);
+					Debug.Log ("ModuleAnimatedDecoupler.onStageSeparation() triggered animation " + this.animationName);
 				}
 			}
 		}
 
-
+		// Disabling; OnActive() not reliable for determining decoupled state and can be triggered by other mods.
+		// Using GameEvents.onStageSeparation instead.
+		/*
 		public override void OnActive()
 		{
 			Debug.Log ("ModuleAnimatedAnchoredDecoupler.OnActive() start; isDecoupled = " + this.isDecoupled.ToString ());
-			//base.OnActive ();
-			//if (this.isDecoupled && (object)anims != null && !animationComplete) 
-			if ((object)anim != null && !this.animationComplete) 
+			base.OnActive ();
+			if (this.isDecoupled && (object)anims != null && !animationComplete) 
 			{
 				try
 				{
 					this.anim.Play (animationName);
 					animationComplete = true;
+					Debug.Log ("ModuleAnimatedAnchoredDecoupler played animation " + this.animationName + "!");
 				}
 				catch (Exception e)
 				{
 					Debug.Log ("ModuleAnimatedAnchoredDecoupler error! " + e.Message);
 				}
+				Debug.Log ("ModuleAnimatedAnchoredDecoupler.OnActive() finished; isDecoupled = " + this.isDecoupled.ToString ());
 			}
-			base.OnActive ();
-			Debug.Log ("ModuleAnimatedAnchoredDecoupler.OnActive() finished; isDecoupled = " + this.isDecoupled.ToString ());
+			else
+			{
+				Debug.Log ("ModuleAnimatedAnchoredDecoupler.OnActive() finished; isDecoupled = " + this.isDecoupled.ToString ());
+			}
 		}
+		*/
 	}
 }
-
