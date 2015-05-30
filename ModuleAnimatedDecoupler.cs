@@ -14,7 +14,7 @@ using UnityEngine;
 
 namespace AnimatedDecoupler
 {
-	public class ModuleAnimatedDecoupler : ModuleDecouple
+	public class ModuleAnimatedDecoupler : ModuleDecouple, IScalarModule
 	{
 		[KSPField]
 		public string animationName;
@@ -29,23 +29,32 @@ namespace AnimatedDecoupler
 		{
 		}
 
+		public override void OnAwake()
+		{
+			this.OnMovingEvent = new EventData<float, float>("ModuleAnimatedDecoupler.OnMovingEvent");
+			this.OnStoppedEvent = new EventData<float>("ModuleAnimateDecoupler.OnStoppedEvent");
+		}
+
 		public override void OnStart (StartState state)
 		{
 			GameEvents.onStageSeparation.Add (checkForDecoupling);
 			base.OnStart (state);
 			Debug.Log ("ModuleAnimatedDecoupler.OnStart(), isDecoupled = " + this.isDecoupled.ToString ());
-			anim = part.FindModelAnimators(animationName).FirstOrDefault();
-			if ((object)this.anim == null)
+			if (animationName != "")
 			{
-				Debug.Log ("ModuleAnimatedDecoupler: Animations not found");
-			}
-			else
-			{
-				Debug.Log ("ModuleAnimatedDecoupler.OnStart() - Animation found named " + animationName);
-				// If Decoupled or animation already played then set animation to end.
-				if (this.animationComplete || this.isDecoupled)
+				anim = part.FindModelAnimators(animationName).FirstOrDefault();
+				if ((object)this.anim == null)
 				{
-					this.anim[animationName].normalizedTime = 1f;
+					Debug.Log ("ModuleAnimatedDecoupler: Animations not found");
+				}
+				else
+				{
+					Debug.Log ("ModuleAnimatedDecoupler.OnStart() - Animation found named " + animationName);
+					// If Decoupled or animation already played then set animation to end.
+					if (this.animationComplete || this.isDecoupled)
+					{
+						this.anim[animationName].normalizedTime = 1f;
+					}
 				}
 			}
 		}
@@ -55,41 +64,75 @@ namespace AnimatedDecoupler
 			if (separationData.eventType == FlightEvents.STAGESEPARATION && separationData.origin == this.part)
 			{
 				// PROBABLY got called because we decoupled, but no way to know because ModuleDecouple doesn't SET isDecoupled until after the event fires. 
-				if (!this.animationComplete || !this.anim.IsPlaying (animationName))
+				if (animationName != "" && (!this.animationComplete || !this.anim.IsPlaying (animationName)))
 				{
+					OnMoving.Fire (0f, 1f);
 					this.anim.Play (animationName);
+					this.OnMoving.Fire (0f, 1f);
 					this.animationComplete = true;
-					this.isDecoupled = true;
 					Debug.Log ("ModuleAnimatedDecoupler.onStageSeparation() triggered animation " + this.animationName);
 				}
+				this.isDecoupled = true;
+				this.OnStop.Fire (1f);
 			}
 		}
-		// Disabling; OnActive() not reliable for determining decoupled state and can be triggered by other mods.
-		// Using GameEvents.onStageSeparation instead.
-		/*
-		public override void OnActive()
+		//
+		// Properties
+		//
+		private EventData <float, float> OnMovingEvent;
+		private EventData <float> OnStoppedEvent;
+
+		public bool CanMove
 		{
-			Debug.Log ("ModuleAnimatedDecoupler.OnActive() start; isDecoupled = " + this.isDecoupled.ToString () + ", animationComplete = " + this.animationComplete.ToString ());
-			base.OnActive ();
-			if (this.isDecoupled && (object)anims != null && !animationComplete) 
+			get
 			{
-				try
-				{
-					this.anim.Play (animationName);
-					this.animationComplete = true;
-					Debug.Log ("ModuleAnimatedDecoupler played animation " + this.animationName + "!");
-				} 
-				catch (Exception e)
-				{
-					Debug.Log ("ModuleAnimatedDecoupler error! " + e.Message);
-				}
-				Debug.Log ("ModuleAnimatedDecoupler.OnActive() finished; isDecoupled = " + this.isDecoupled.ToString () + ", animationComplete = " + this.animationComplete.ToString ());
-			}
-			else
-			{
-				Debug.Log ("ModuleAnimatedDecoupler unable to play animation (OnActive)");
+				//return part.ShieldedFromAirstream;
+				return true;
 			}
 		}
-		*/
+		
+		public float GetScalar
+		{
+			get
+			{
+				return isDecoupled ? 1 : 0;
+			}
+		}
+		
+		public EventData<float, float> OnMoving
+		{
+			get
+			{
+				return OnMovingEvent;
+			}
+		}
+		
+		public EventData<float> OnStop
+		{
+			get
+			{
+				return OnStoppedEvent;
+			}
+		}
+		
+		//
+		// Methods
+		//
+		public bool IsMoving ()
+		{
+			return false;
+		}
+
+		public void SetScalar (float t)
+		{
+		}
+		
+		public void SetUIRead (bool state)
+		{
+		}
+
+		public void SetUIWrite (bool state)
+		{
+		}
 	}
 }
