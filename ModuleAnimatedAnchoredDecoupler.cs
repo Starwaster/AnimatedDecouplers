@@ -8,10 +8,16 @@ namespace AnimatedDecouplers
 	public class ModuleAnimatedAnchoredDecoupler : ModuleAnchoredDecoupler, IScalarModule
 	{
 		[KSPField]
-		public string animationName;
+		public string animationName = "";
 		
 		protected Animation anim;
 		
+		protected bool isDecoupling;
+
+		protected bool isResetting;
+
+		ModuleCargoBay cargoBay;
+
 		[KSPField(isPersistant = true)]
 		public bool animationComplete = false;
 		
@@ -24,11 +30,14 @@ namespace AnimatedDecouplers
 		{
 			this.OnMovingEvent = new EventData<float, float>("ModuleAnimatedAnchoredDecoupler.OnMovingEvent");
 			this.OnStoppedEvent = new EventData<float>("ModuleAnimatedAnchoredDecoupler.OnStoppedEvent");
+			base.OnAwake ();
 		}
 		
 		public override void OnStart (StartState state)
 		{
 			GameEvents.onStageSeparation.Add (checkForDecoupling);
+			GameEvents.onVesselWasModified.Add (OnVesselWasModified);
+			cargoBay = part.FindModuleImplementing<ModuleCargoBay> ();
 			base.OnStart (state);
 			Debug.Log ("ModuleAnimatedAnchoredDecoupler.OnStart(), isDecoupled = " + isDecoupled.ToString ());
 			if (animationName != "")
@@ -50,23 +59,51 @@ namespace AnimatedDecouplers
 			}
 		}
 
+		private void OnVesselWasModified (Vessel v)
+		{
+			if ((object)v != null && v == vessel)
+			{
+				if (!(isDecoupling || isDecoupled))
+				{
+					
+					Part p;
+					if(this.explosiveNodeID == "")
+						p = part.srfAttachNode.attachedPart;
+					else
+						p = part.findAttachNode (this.explosiveNodeID).attachedPart;
+					if (p = null)
+					{
+						isDecoupling = true;
+						OnMoving.Fire (0f, 1f);
+						OnStop.Fire (1f);
+					}
+				}
+			}
+		}
+
 		public void checkForDecoupling(EventReport separationData)
 		{
 			if (separationData.eventType == FlightEvents.STAGESEPARATION && separationData.origin == this.part)
 			{
 				// PROBABLY got called because we decoupled, but no way to know because ModuleAnchoredDecoupler doesn't SET isDecoupled until after the event fires. 
-				if (animationName != "" && (!this.animationComplete || !this.anim.IsPlaying (animationName)))
+				OnMoving.Fire (0f, 1f);
+				if (animationName != "" && (object)anim != null && (!this.animationComplete || !this.anim.IsPlaying (animationName)))
 				{
-					OnMoving.Fire (0f, 1f);
 					this.anim.Play (animationName);
 					this.animationComplete = true;
 					Debug.Log ("ModuleAnimatedAnchoredDecoupler.onStageSeparation() triggered animation " + this.animationName);
 				}
-				this.isDecoupled = true;
+				this.isDecoupling = true;
 				this.OnStop.Fire (1f);
 			}
 		}
 
+		private void OnDestroy()
+		{
+			GameEvents.onStageSeparation.Remove (checkForDecoupling);
+			GameEvents.onVesselWasModified.Remove (OnVesselWasModified);
+		}
+		
 		//
 		// Properties
 		//
@@ -86,10 +123,7 @@ namespace AnimatedDecouplers
 		{
 			get
 			{
-				if (isDecoupled)
-					return 1f;
-				else
-					return 0f;
+				return (isResetting || isDecoupling) ? 1f : 0f;
 			}
 		}
 		
