@@ -118,7 +118,7 @@ namespace AnimatedDecoupler
 		{
 			get
 			{
-				return (isResetting || isDecoupling) ? 1f : 0f;
+				return (object)part.findAttachNode(this.explosiveNodeID).attachedPart == null || isResetting || isDecoupling ? 1f : 0f;
 			}
 		}
 		
