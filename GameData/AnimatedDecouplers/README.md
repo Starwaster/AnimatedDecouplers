@@ -22,3 +22,12 @@ For example:
 	}
 	
 Additionally, if ModuleCargoBay is configured on the part and DeployModuleIndex has the module index for the decoupler provided (0 = first) then the part will shield enclosed parts in KSP 1.0 and beyond. (against aerothermodynamic forces)
+
+
+Changelog
+Version 1.2.0
+
+* Added waitForAnimation. (if true, decoupling will be delayed until animation has completed)
+* Added layer field, requiring an integer. If set, part's animation layer will be set to this. (unique layers per animation help prevent animations from canceling one another)
+* Added check for null animator. (if no animation was set and found then don't delay decoupling)
+* General reworking of code.
