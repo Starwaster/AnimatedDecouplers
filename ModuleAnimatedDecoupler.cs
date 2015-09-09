@@ -1,5 +1,6 @@
 using System;
-using System.Linq; 
+using System.Linq;
+using System.Collections;
 using KSP;
 using UnityEngine;
 
@@ -10,20 +11,55 @@ namespace AnimatedDecoupler
 		[KSPField]
 		public string animationName = "";
 
+		[KSPField()]
+		public bool waitForAnimation = false;
+
+		[KSPField(isPersistant = true)]
+		public bool animationComplete = false;
+		
+		[KSPField]
+		public int layer = 0;
+
 		protected Animation anim;
 
 		protected bool isDecoupling;
 
 		protected bool isResetting;
 
-		protected ModuleCargoBay cargoBay;
+		protected bool decoupleAfterAnimation = false;
 
-		[KSPField(isPersistant = true)]
-		public bool animationComplete = false;
+		protected ModuleCargoBay cargoBay;
 
 		public ModuleAnimatedDecoupler ():
 		base()
 		{
+		}
+
+		//[KSPAction("Decouple")]
+		public new void DecoupleAction(KSPActionParam param)
+		{
+			if (waitForAnimation)
+			{
+				anim.Play(animationName);
+				isDecoupling = true;
+				OnMoving.Fire (0f, 1f);
+				StartCoroutine(DelayedDecouple());
+			}
+			else
+				OnDecouple ();
+		}
+
+		public new void Decouple()
+		{
+			if (waitForAnimation)
+			{
+				anim.Play(animationName);
+				isDecoupling = true;
+				OnMoving.Fire (0f, 1f);
+				StartCoroutine(DelayedDecouple());
+			}
+			else
+				OnDecouple ();
 		}
 
 		public override void OnAwake()
@@ -35,8 +71,10 @@ namespace AnimatedDecoupler
 
 		public override void OnStart (StartState state)
 		{
-			GameEvents.onStageSeparation.Add (checkForDecoupling);
+			// TODO Consider deprecating checkForDecoupling; it should no longer be necessary
+			//GameEvents.onStageSeparation.Add (checkForDecoupling);
 			GameEvents.onVesselWasModified.Add (OnVesselWasModified);
+
 			cargoBay = part.FindModuleImplementing<ModuleCargoBay> ();
 			base.OnStart (state);
 			Debug.Log ("ModuleAnimatedDecoupler.OnStart(), isDecoupled = " + this.isDecoupled.ToString ());
@@ -51,11 +89,28 @@ namespace AnimatedDecoupler
 				{
 					Debug.Log ("ModuleAnimatedDecoupler.OnStart() - Animation found named " + animationName);
 					// If Decoupled or animation already played then set animation to end.
+					this.anim[animationName].layer = layer;
 					if (this.animationComplete || this.isDecoupled)
 					{
 						this.anim[animationName].normalizedTime = 1f;
 					}
 				}
+			}
+		}
+
+		public override void OnActive()
+		{
+			if (staged)
+			{
+				if (waitForAnimation)
+				{
+					anim.Play(animationName);
+					isDecoupling = true;
+					OnMoving.Fire (0f, 1f);
+					StartCoroutine(DelayedDecouple());
+				}
+				else
+					OnDecouple ();
 			}
 		}
 
@@ -75,22 +130,47 @@ namespace AnimatedDecoupler
 			}
 		}
 
+		// TODO Consider deprecating checkForDecoupling; it should no longer be necessary
 		private void checkForDecoupling(EventReport separationData)
 		{
+			return;
 			if (separationData.eventType == FlightEvents.STAGESEPARATION && separationData.origin == this.part)
 			{
 				// PROBABLY got called because we decoupled, but no way to know because ModuleDecouple doesn't SET isDecoupled until after the event fires. 
 				OnMoving.Fire (0f, 1f);
 				if (animationName != "" && (object)anim != null && (!this.animationComplete || !this.anim.IsPlaying (animationName)))
 				{
-					this.anim.Play (animationName);
-					this.OnMoving.Fire (0f, 1f);
-					this.animationComplete = true;
+					if (waitForAnimation)
+					{
+						//PlayAnimation();
+					}
+					else
+					{
+						anim.Play(animationName);
+						this.OnMoving.Fire (0f, 1f);
+						this.animationComplete = true;
+					}
 					Debug.Log ("ModuleAnimatedDecoupler.onStageSeparation() triggered animation " + this.animationName);
 				}
 				this.isDecoupling = true;
 				this.OnStop.Fire (1f);
 			}
+		}
+
+		//public void PlayAnimation()
+		//{
+		//	animation.Play(animationName);
+		//	this.isDecoupling = true;
+		//	this.OnMoving.Fire (0f, 1f);
+		//	StartCoroutine( CheckEventTime() );
+		//}
+
+		IEnumerator DelayedDecouple()
+		{
+			yield return new WaitForSeconds(EventTime);
+			this.animationComplete = true;
+			this.OnStop.Fire (1f);
+			OnDecouple ();
 		}
 
 		private void OnDestroy()
@@ -104,6 +184,22 @@ namespace AnimatedDecoupler
 		//
 		private EventData <float, float> OnMovingEvent;
 		private EventData <float> OnStoppedEvent;
+
+		float EventTime
+		{
+			get
+			{
+				return anim[animationName].length / anim[animationName].speed;
+			}
+		}
+
+		//AnimationState AnimState
+		//{
+		//	get
+		//	{
+		//		return anim[animationName];
+		//	}
+		//}
 
 		public bool CanMove
 		{
@@ -143,7 +239,7 @@ namespace AnimatedDecoupler
 		//
 		public bool IsMoving ()
 		{
-			return false;
+			return anim.IsPlaying (animationName);
 		}
 
 		public void SetScalar (float t)
