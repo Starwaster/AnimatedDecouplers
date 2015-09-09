@@ -35,7 +35,7 @@ namespace AnimatedDecouplers
 
 		public new void DecoupleAction(KSPActionParam param)
 		{
-			if (waitForAnimation)
+			if (waitForAnimation && (object)anim != null)
 			{
 				anim.Play(animationName);
 				isDecoupling = true;
@@ -48,7 +48,7 @@ namespace AnimatedDecouplers
 		
 		public new void Decouple()
 		{
-			if (waitForAnimation)
+			if (waitForAnimation && (object)anim != null)
 			{
 				anim.Play(animationName);
 				isDecoupling = true;
@@ -98,7 +98,7 @@ namespace AnimatedDecouplers
 		{
 			if (staged)
 			{
-				if (waitForAnimation)
+				if (waitForAnimation && (object)anim != null)
 				{
 					anim.Play(animationName);
 					isDecoupling = true;
