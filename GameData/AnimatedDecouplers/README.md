@@ -17,6 +17,8 @@ For example:
 	    explosiveNodeID = top
 	    staged = false
 	    animationName = SDHI_Umbilical
+		waitForAnimation = false // (If true, then delay decoupling until animation has finished playing)
+		layer = 1 // Animation's layer will be set to this. Helps prevent multiple animations on one part interfering with each other
 	}
 	
 Additionally, if ModuleCargoBay is configured on the part and DeployModuleIndex has the module index for the decoupler provided (0 = first) then the part will shield enclosed parts in KSP 1.0 and beyond. (against aerothermodynamic forces)
