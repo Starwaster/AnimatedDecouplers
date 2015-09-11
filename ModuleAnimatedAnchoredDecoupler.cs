@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections;
 using KSP;
 using UnityEngine;
 
@@ -18,13 +19,46 @@ namespace AnimatedDecouplers
 
 		ModuleCargoBay cargoBay;
 
+		[KSPField()]
+		public bool waitForAnimation = false;
+		
 		[KSPField(isPersistant = true)]
 		public bool animationComplete = false;
+		
+		[KSPField]
+		public int layer = 0;
 		
 		public ModuleAnimatedAnchoredDecoupler ():
 		base()
 		{
 		}
+
+		public new void DecoupleAction(KSPActionParam param)
+		{
+			if (waitForAnimation && (object)anim != null)
+			{
+				anim.Play(animationName);
+				isDecoupling = true;
+				OnMoving.Fire (0f, 1f);
+				StartCoroutine(DelayedDecouple());
+			}
+			else
+				OnDecouple ();
+		}
+		
+		public new void Decouple()
+		{
+			if (waitForAnimation && (object)anim != null)
+			{
+				anim.Play(animationName);
+				isDecoupling = true;
+				OnMoving.Fire (0f, 1f);
+				StartCoroutine(DelayedDecouple());
+			}
+			else
+				OnDecouple ();
+		}
+		
 
 		public override void OnAwake()
 		{
@@ -35,7 +69,8 @@ namespace AnimatedDecouplers
 		
 		public override void OnStart (StartState state)
 		{
-			GameEvents.onStageSeparation.Add (checkForDecoupling);
+			// TODO Consider deprecating checkForDecoupling; it should no longer be necessary
+			//GameEvents.onStageSeparation.Add (checkForDecoupling);
 			GameEvents.onVesselWasModified.Add (OnVesselWasModified);
 			cargoBay = part.FindModuleImplementing<ModuleCargoBay> ();
 			base.OnStart (state);
@@ -59,6 +94,22 @@ namespace AnimatedDecouplers
 			}
 		}
 
+		public override void OnActive()
+		{
+			if (staged)
+			{
+				if (waitForAnimation && (object)anim != null)
+				{
+					anim.Play(animationName);
+					isDecoupling = true;
+					OnMoving.Fire (0f, 1f);
+					StartCoroutine(DelayedDecouple());
+				}
+				else
+					OnDecouple ();
+			}
+		}
+		
 		private void OnVesselWasModified (Vessel v)
 		{
 			if ((object)v != null && v == vessel)
@@ -81,8 +132,10 @@ namespace AnimatedDecouplers
 			}
 		}
 
-		public void checkForDecoupling(EventReport separationData)
+		// TODO Consider deprecating checkForDecoupling; it should no longer be necessary
+		private void checkForDecoupling(EventReport separationData)
 		{
+			return;
 			if (separationData.eventType == FlightEvents.STAGESEPARATION && separationData.origin == this.part)
 			{
 				// PROBABLY got called because we decoupled, but no way to know because ModuleAnchoredDecoupler doesn't SET isDecoupled until after the event fires. 
@@ -98,6 +151,14 @@ namespace AnimatedDecouplers
 			}
 		}
 
+		IEnumerator DelayedDecouple()
+		{
+			yield return new WaitForSeconds(EventTime);
+			this.animationComplete = true;
+			this.OnStop.Fire (1f);
+			OnDecouple ();
+		}
+		
 		private void OnDestroy()
 		{
 			GameEvents.onStageSeparation.Remove (checkForDecoupling);
@@ -110,6 +171,14 @@ namespace AnimatedDecouplers
 		private EventData <float, float> OnMovingEvent;
 		private EventData <float> OnStoppedEvent;
 		
+		float EventTime
+		{
+			get
+			{
+				return anim[animationName].length / anim[animationName].speed;
+			}
+		}
+
 		public bool CanMove
 		{
 			get
