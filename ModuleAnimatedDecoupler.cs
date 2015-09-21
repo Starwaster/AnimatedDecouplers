@@ -239,7 +239,11 @@ namespace AnimatedDecoupler
 		//
 		public bool IsMoving ()
 		{
-			return anim.IsPlaying (animationName);
+			if ((object)anim != null) {
+				return anim.IsPlaying (animationName);
+			} else {
+				return false;
+			}
 		}
 
 		public void SetScalar (float t)
