@@ -31,3 +31,7 @@ Version 1.2.0
 * Added layer field, requiring an integer. If set, part's animation layer will be set to this. (unique layers per animation help prevent animations from canceling one another)
 * Added check for null animator. (if no animation was set and found then don't delay decoupling)
 * General reworking of code.
+
+Version 1.2.1
+
+* Added extra checks for null references. (fixes certain issues in staging. i.e. only one of multiple symmetrical decouplers firing or one part of any staging group firing)
