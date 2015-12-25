@@ -239,8 +239,12 @@ namespace AnimatedDecoupler
 		//
 		public bool IsMoving ()
 		{
-			if ((object)anim != null) {
-				return anim.IsPlaying (animationName);
+			if (animationName != "") {
+				if (anim != null) {
+					return anim.IsPlaying (animationName);
+				} else {
+					return false;
+				}
 			} else {
 				return false;
 			}
