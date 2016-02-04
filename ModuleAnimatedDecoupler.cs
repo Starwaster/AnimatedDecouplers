@@ -38,29 +38,36 @@ namespace AnimatedDecoupler
 		//[KSPAction("Decouple")]
 		public new void DecoupleAction(KSPActionParam param)
 		{
-			if (waitForAnimation && (object)anim != null)
-			{
-				anim.Play(animationName);
-				isDecoupling = true;
-				OnMoving.Fire (0f, 1f);
-				StartCoroutine(DelayedDecouple());
-			}
-			else
-				OnDecouple ();
+            if ((object)anim != null)
+            {
+                anim.Play (animationName);
+                isDecoupling = true;
+                OnMoving.Fire (0f, 1f);
+                if (waitForAnimation)
+                    StartCoroutine (DelayedDecouple ());
+                else
+                    OnDecouple ();
+            }
+            else
+                OnDecouple ();
 		}
 
 		public new void Decouple()
 		{
-			if (waitForAnimation && (object)anim != null)
-			{
-				anim.Play(animationName);
-				isDecoupling = true;
-				OnMoving.Fire (0f, 1f);
-				StartCoroutine(DelayedDecouple());
-			}
-			else
-				OnDecouple ();
+            if ((object)anim != null)
+            {
+                anim.Play (animationName);
+                isDecoupling = true;
+                OnMoving.Fire (0f, 1f);
+                if (waitForAnimation)
+                    StartCoroutine (DelayedDecouple ());
+                else
+                    OnDecouple ();
+            }
+            else
+                OnDecouple ();
 		}
+              
 
 		public override void OnAwake()
 		{
@@ -102,13 +109,16 @@ namespace AnimatedDecoupler
 		{
 			if (staged)
 			{
-				if (waitForAnimation && (object)anim != null)
-				{
-					anim.Play(animationName);
-					isDecoupling = true;
-					OnMoving.Fire (0f, 1f);
-					StartCoroutine(DelayedDecouple());
-				}
+                if ((object)anim != null)
+                {
+                    anim.Play (animationName);
+                    isDecoupling = true;
+                    OnMoving.Fire (0f, 1f);
+                    if (waitForAnimation)
+                        StartCoroutine (DelayedDecouple ());
+                    else
+                        OnDecouple ();
+                }
 				else
 					OnDecouple ();
 			}
@@ -131,7 +141,8 @@ namespace AnimatedDecoupler
 		}
 
 		// TODO Consider deprecating checkForDecoupling; it should no longer be necessary
-		private void checkForDecoupling(EventReport separationData)
+		/*
+        private void checkForDecoupling(EventReport separationData)
 		{
 			return;
 			if (separationData.eventType == FlightEvents.STAGESEPARATION && separationData.origin == this.part)
@@ -156,6 +167,7 @@ namespace AnimatedDecoupler
 				this.OnStop.Fire (1f);
 			}
 		}
+        */
 
 		//public void PlayAnimation()
 		//{
@@ -175,7 +187,7 @@ namespace AnimatedDecoupler
 
 		private void OnDestroy()
 		{
-			GameEvents.onStageSeparation.Remove (checkForDecoupling);
+			//GameEvents.onStageSeparation.Remove (checkForDecoupling);
 			GameEvents.onVesselWasModified.Remove (OnVesselWasModified);
 		}
 
@@ -239,13 +251,19 @@ namespace AnimatedDecoupler
 		//
 		public bool IsMoving ()
 		{
-			if (animationName != "") {
-				if (anim != null) {
+			if (animationName != "")
+            {
+                if ((object)anim != null)
+                {
 					return anim.IsPlaying (animationName);
-				} else {
+				}
+                else
+                {
 					return false;
 				}
-			} else {
+			}
+            else
+            {
 				return false;
 			}
 		}

@@ -161,7 +161,7 @@ namespace AnimatedDecouplers
 		
 		private void OnDestroy()
 		{
-			GameEvents.onStageSeparation.Remove (checkForDecoupling);
+			//GameEvents.onStageSeparation.Remove (checkForDecoupling);
 			GameEvents.onVesselWasModified.Remove (OnVesselWasModified);
 		}
 		
