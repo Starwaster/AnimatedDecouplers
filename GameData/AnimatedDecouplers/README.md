@@ -25,6 +25,10 @@ Additionally, if ModuleCargoBay is configured on the part and DeployModuleIndex 
 
 
 Changelog
+Version 1.3.0
+* Additional checks for null references
+* Reworking of code; extraneous code removed. (deploy checks for occlusion purposes that were later determined to be unnecessary)
+
 Version 1.2.0
 
 * Added waitForAnimation. (if true, decoupling will be delayed until animation has completed)
