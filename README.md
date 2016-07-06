@@ -25,6 +25,16 @@ Additionally, if ModuleCargoBay is configured on the part and DeployModuleIndex 
 
 
 Changelog
+v1.3.1
+* Recompiled for KSP 1.1
+
+v1.3.0
+* Major plugin restructuring.
+* Extraneous code removed / disabled.
+
+v1.2.1
+* Added extra checks for null references. (fixes certain issues in staging. i.e. only one of multiple symmetrical decouplers firing or one part of any staging group firing) (thanks Kerbas_ad_Astra!)
+
 Version 1.2.0
 
 * Added waitForAnimation. (if true, decoupling will be delayed until animation has completed)

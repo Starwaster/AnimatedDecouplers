@@ -1,0 +1,24 @@
+{
+    "NAME":"Animated Decouplers",
+    "URL":"https://raw.githubusercontent.com/Starwaster/AnimatedDecouplers/master/AnimatedDecouplers.version",
+    "DOWNLOAD":"https://github.com/Starwaster/AnimatedDecouplers/releases",
+    "GITHUB":
+    {
+        "USERNAME":"Starwaster",
+        "REPOSITORY":"AnimatedDecouplers",
+        "ALLOW_PRE_RELEASE":false,
+    },
+    "VERSION":
+    {
+        "MAJOR":1,
+        "MINOR":3,
+        "PATCH":2,
+        "BUILD":0
+    },
+    "KSP_VERSION":
+    {
+        "MAJOR":1,
+        "MINOR":1,
+        "PATCH":3
+    },
+}
