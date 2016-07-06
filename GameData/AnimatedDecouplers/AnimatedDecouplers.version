@@ -1,7 +1,7 @@
 {
     "NAME":"Animated Decouplers",
-    "URL":"https://raw.githubusercontent.com/Starwaster/AnimatedDecouplers/master/AnimatedDecouplers.version",
-    "DOWNLOAD":"https://github.com/Starwaster/AnimatedDecouplers/releases",
+    "URL":"http://raw.githubusercontent.com/Starwaster/AnimatedDecouplers/master/GameData/AnimatedDecouplers/AnimatedDecouplers.version",
+    "DOWNLOAD":"http://github.com/Starwaster/AnimatedDecouplers/releases",
     "GITHUB":
     {
         "USERNAME":"Starwaster",
