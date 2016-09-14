@@ -7,7 +7,7 @@ using UnityEngine;
 namespace AnimatedDecoupler
 {
 	public class ModuleAnimatedDecoupler : ModuleDecouple, IScalarModule
-	{
+    {
 		[KSPField]
 		public string animationName = "";
 
@@ -130,7 +130,7 @@ namespace AnimatedDecoupler
 			{
 				if (!(isDecoupling || isDecoupled))
 				{
-					if((object)part.findAttachNode (this.explosiveNodeID).attachedPart == null)
+					if((object)part.FindAttachNode(this.explosiveNodeID).attachedPart == null)
 					{
 						isDecoupling = true;
 						OnMoving.Fire (0f, 1f);
@@ -226,7 +226,7 @@ namespace AnimatedDecoupler
 		{
 			get
 			{
-				return (object)part.findAttachNode(this.explosiveNodeID).attachedPart == null || isResetting || isDecoupling ? 1f : 0f;
+				return (object)part.FindAttachNode(this.explosiveNodeID).attachedPart == null || isResetting || isDecoupling ? 1f : 0f;
 			}
 		}
 		
@@ -245,11 +245,19 @@ namespace AnimatedDecoupler
 				return OnStoppedEvent;
 			}
 		}
-		
-		//
-		// Methods
-		//
-		public bool IsMoving ()
+
+        public string ScalarModuleID
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        //
+        // Methods
+        //
+        public bool IsMoving ()
 		{
 			if (animationName != "")
             {
