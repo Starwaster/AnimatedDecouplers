@@ -27,6 +27,9 @@ namespace AnimatedDecouplers
 		
 		[KSPField]
 		public int layer = 0;
+
+        [KSPField]
+        public string moduleID = "animatedAnchoredDecoupler";
 		
 		public ModuleAnimatedAnchoredDecoupler ():
 		base()
@@ -121,7 +124,7 @@ namespace AnimatedDecouplers
 					if(this.explosiveNodeID == "")
 						p = part.srfAttachNode.attachedPart;
 					else
-						p = part.findAttachNode (this.explosiveNodeID).attachedPart;
+						p = part.FindAttachNode (this.explosiveNodeID).attachedPart;
 					if (p = null)
 					{
 						isDecoupling = true;
@@ -195,8 +198,16 @@ namespace AnimatedDecouplers
 				return (isResetting || isDecoupling) ? 1f : 0f;
 			}
 		}
-		
-		public EventData<float, float> OnMoving
+
+        public string ScalarModuleID
+        {
+            get
+            {
+                return this.moduleID;
+            }
+        }
+      
+        public EventData<float, float> OnMoving
 		{
 			get
 			{
