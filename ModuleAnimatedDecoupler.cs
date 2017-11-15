@@ -8,7 +8,7 @@ namespace AnimatedDecoupler
 {
 	public class ModuleAnimatedDecoupler : ModuleDecouple, IScalarModule
 	{
-		[KSPField]
+        [KSPField]
 		public string animationName = "";
 
 		[KSPField()]
