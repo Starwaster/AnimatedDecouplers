@@ -25,6 +25,21 @@ Additionally, if ModuleCargoBay is configured on the part and DeployModuleIndex 
 
 
 Changelog
+Version 1.3.5
+* Recompiled for KSP 1.3.1
+
+Version 1.3.4
+* Recompiled for KSP 1.3.0
+
+Version 1.3.3
+* Recompiled for KSP 1.2.1
+
+Version 1.3.2
+* Recompiled for KSP 1.1.3
+
+Version 1.3.1
+* Recompiled for KSP 1.1
+
 Version 1.3.0
 * Additional checks for null references
 * Reworking of code; extraneous code removed. (deploy checks for occlusion purposes that were later determined to be unnecessary)
