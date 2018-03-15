@@ -1,6 +1,8 @@
 AnimatedDecouplers
 ==================
 Extensions of KSP's decouplers that play animations
+Forum Thread
+https://forum.kerbalspaceprogram.com/index.php?showtopic=170880
 
 Configure the same way as you would standard decoupler modules but it now accepts animationName, which is the name of an animation on the model.
 
