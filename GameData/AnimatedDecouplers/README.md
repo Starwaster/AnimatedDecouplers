@@ -1,8 +1,6 @@
 AnimatedDecouplers
 ==================
-
 Extensions of KSP's decouplers that play animations
-
 
 Configure the same way as you would standard decoupler modules but it now accepts animationName, which is the name of an animation on the model.
 
@@ -18,13 +16,16 @@ For example:
 	    staged = false
 	    animationName = SDHI_Umbilical
 		waitForAnimation = false // (If true, then delay decoupling until animation has finished playing)
-		layer = 1 // Animation's layer will be set to this. Helps prevent multiple animations on one part interfering with each other
+		layer = 1 // Animation's layer will be set to this. Helps prevent multiple animations on one part interfering with each other if each animation (or groups of animations) gets its own layer.
 	}
 	
 Additionally, if ModuleCargoBay is configured on the part and DeployModuleIndex has the module index for the decoupler provided (0 = first) then the part will shield enclosed parts in KSP 1.0 and beyond. (against aerothermodynamic forces)
 
 
 Changelog
+Version 1.3.6
+* Recompiled for KSP 1.4.0
+
 Version 1.3.5
 * Recompiled for KSP 1.3.1
 
