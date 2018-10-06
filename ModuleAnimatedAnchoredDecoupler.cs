@@ -73,7 +73,7 @@ namespace AnimatedDecouplers
 		public override void OnStart (StartState state)
 		{
 			// TODO Consider deprecating checkForDecoupling; it should no longer be necessary
-			//GameEvents.onStageSeparation.Add (checkForDecoupling);
+			GameEvents.onStageSeparation.Add (checkForDecoupling);
 			GameEvents.onVesselWasModified.Add (OnVesselWasModified);
 			cargoBay = part.FindModuleImplementing<ModuleCargoBay> ();
 			base.OnStart (state);
@@ -121,10 +121,7 @@ namespace AnimatedDecouplers
 				{
 					
 					Part p;
-					if(this.explosiveNodeID == "")
-						p = part.srfAttachNode.attachedPart;
-					else
-						p = part.FindAttachNode (this.explosiveNodeID).attachedPart;
+                    p = this.ExplosiveNode.attachedPart;
 					if (p = null)
 					{
 						isDecoupling = true;
@@ -138,7 +135,6 @@ namespace AnimatedDecouplers
 		// TODO Consider deprecating checkForDecoupling; it should no longer be necessary
 		private void checkForDecoupling(EventReport separationData)
 		{
-			return;
 			if (separationData.eventType == FlightEvents.STAGESEPARATION && separationData.origin == this.part)
 			{
 				// PROBABLY got called because we decoupled, but no way to know because ModuleAnchoredDecoupler doesn't SET isDecoupled until after the event fires. 
@@ -164,7 +160,7 @@ namespace AnimatedDecouplers
 		
 		private void OnDestroy()
 		{
-			//GameEvents.onStageSeparation.Remove (checkForDecoupling);
+			GameEvents.onStageSeparation.Remove (checkForDecoupling);
 			GameEvents.onVesselWasModified.Remove (OnVesselWasModified);
 		}
 		
