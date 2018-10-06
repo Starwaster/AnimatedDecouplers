@@ -1,7 +1,9 @@
 AnimatedDecouplers
 ==================
 Extensions of KSP's decouplers that play animations
+
 Forum Thread
+
 https://forum.kerbalspaceprogram.com/index.php?showtopic=170880
 
 Configure the same way as you would standard decoupler modules but it now accepts animationName, which is the name of an animation on the model.
@@ -25,6 +27,9 @@ Additionally, if ModuleCargoBay is configured on the part and DeployModuleIndex 
 
 
 Changelog
+Version 1.4.0
+* Fixed issue with anchored decoupler not animating
+
 Version 1.3.6
 * Recompiled for KSP 1.4.0
 
