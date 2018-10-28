@@ -27,6 +27,9 @@ Additionally, if ModuleCargoBay is configured on the part and DeployModuleIndex 
 
 
 Changelog
+Version 1.4.1
+* Recompile for KSP 1.5.x
+
 Version 1.4.0
 * Fixed issue with anchored decoupler not animating
 
