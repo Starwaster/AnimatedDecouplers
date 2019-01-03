@@ -35,10 +35,10 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Core" />
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\Games\KSP_win_1.5.1_STOCK\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>I:\Games\KSP_1.6.0\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\Games\KSP_win_1.5.1_STOCK\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>I:\Games\KSP_1.6.0\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
