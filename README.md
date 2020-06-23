@@ -27,6 +27,11 @@ Additionally, if ModuleCargoBay is configured on the part and DeployModuleIndex 
 
 
 Changelog
+
+Version 1.5
+* Recompiled for KSP 1.9.1. NOTE: This is no longer backwards-compatible with KSP versions before KSP1.8.
+* Updated build environment.
+
 Version 1.4.1
 * Recompile for KSP 1.5.x
 
