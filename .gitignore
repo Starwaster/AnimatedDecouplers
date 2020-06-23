@@ -213,10 +213,10 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
-AnimatedDecouplers.csproj
 *.csproj
 AnimatedDecouplers.sln
 *.csproj
 AnimatedDecouplers.userprefs
+AnimatedDecouplers.User.props
 *.zip
 AnimatedDecouplers/GameData/AnimatedDecouplers/Plugins/AnimatedDecouplers.dll
