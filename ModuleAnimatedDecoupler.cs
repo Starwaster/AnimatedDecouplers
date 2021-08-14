@@ -41,7 +41,7 @@ namespace AnimatedDecoupler
 		//[KSPAction("Decouple")]
 		public new void DecoupleAction(KSPActionParam param)
 		{
-            if ((object)anim != null)
+            if (anim != null)
             {
                 anim.Play (animationName);
                 isDecoupling = true;
@@ -57,7 +57,7 @@ namespace AnimatedDecoupler
 
 		public new void Decouple()
 		{
-            if ((object)anim != null)
+            if (anim != null)
             {
                 anim.Play (animationName);
                 isDecoupling = true;
@@ -91,7 +91,7 @@ namespace AnimatedDecoupler
 			if (animationName != "")
 			{
 				anim = part.FindModelAnimators(animationName).FirstOrDefault();
-				if ((object)this.anim == null)
+				if (this.anim == null)
 				{
 					Debug.Log ("ModuleAnimatedDecoupler: Animations not found");
 				}
@@ -112,7 +112,7 @@ namespace AnimatedDecoupler
 		{
 			if (staged)
 			{
-                if ((object)anim != null)
+                if (anim != null)
                 {
                     anim.Play (animationName);
                     isDecoupling = true;
@@ -129,11 +129,11 @@ namespace AnimatedDecoupler
 
 		private void OnVesselWasModified (Vessel v)
 		{
-			if ((object)v != null && v == vessel)
+			if (v != null && v == vessel)
 			{
 				if (!(isDecoupling || isDecoupled))
 				{
-					if((object)part.FindAttachNode (this.explosiveNodeID).attachedPart == null)
+					if(part.FindAttachNode (this.explosiveNodeID).attachedPart == null)
 					{
 						isDecoupling = true;
 						OnMoving.Fire (0f, 1f);
@@ -152,7 +152,7 @@ namespace AnimatedDecoupler
 			{
 				// PROBABLY got called because we decoupled, but no way to know because ModuleDecouple doesn't SET isDecoupled until after the event fires. 
 				OnMoving.Fire (0f, 1f);
-				if (animationName != "" && (object)anim != null && (!this.animationComplete || !this.anim.IsPlaying (animationName)))
+				if (animationName != "" && anim != null && (!this.animationComplete || !this.anim.IsPlaying (animationName)))
 				{
 					if (waitForAnimation)
 					{
@@ -188,7 +188,7 @@ namespace AnimatedDecoupler
 			OnDecouple ();
 		}
 
-		private void OnDestroy()
+		public void OnDestroy()
 		{
 			//GameEvents.onStageSeparation.Remove (checkForDecoupling);
 			GameEvents.onVesselWasModified.Remove (OnVesselWasModified);
@@ -229,7 +229,7 @@ namespace AnimatedDecoupler
 		{
 			get
 			{
-				return (object)part.FindAttachNode(this.explosiveNodeID).attachedPart == null || isResetting || isDecoupling ? 1f : 0f;
+				return part.FindAttachNode(this.explosiveNodeID).attachedPart == null || isResetting || isDecoupling ? 1f : 0f;
 			}
 		}
 
@@ -264,7 +264,7 @@ namespace AnimatedDecoupler
 		{
 			if (animationName != "")
             {
-                if ((object)anim != null)
+                if (anim != null)
                 {
 					return anim.IsPlaying (animationName);
 				}

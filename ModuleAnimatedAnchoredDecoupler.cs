@@ -38,7 +38,7 @@ namespace AnimatedDecouplers
 
 		public new void DecoupleAction(KSPActionParam param)
 		{
-			if (waitForAnimation && (object)anim != null)
+			if (waitForAnimation && anim != null)
 			{
 				anim.Play(animationName);
 				isDecoupling = true;
@@ -51,7 +51,7 @@ namespace AnimatedDecouplers
 		
 		public new void Decouple()
 		{
-			if (waitForAnimation && (object)anim != null)
+			if (waitForAnimation && anim != null)
 			{
 				anim.Play(animationName);
 				isDecoupling = true;
@@ -73,7 +73,7 @@ namespace AnimatedDecouplers
 		public override void OnStart (StartState state)
 		{
 			// TODO Consider deprecating checkForDecoupling; it should no longer be necessary
-			GameEvents.onStageSeparation.Add (checkForDecoupling);
+			GameEvents.onStageSeparation.Add (CheckForDecoupling);
 			GameEvents.onVesselWasModified.Add (OnVesselWasModified);
 			cargoBay = part.FindModuleImplementing<ModuleCargoBay> ();
 			base.OnStart (state);
@@ -81,7 +81,7 @@ namespace AnimatedDecouplers
 			if (animationName != "")
 			{
 				anim = part.FindModelAnimators(animationName).FirstOrDefault ();
-				if ((object)anim == null)
+				if (anim == null)
 				{
 					Debug.Log ("ModuleAnimatedAnchoredDecoupler: Animations not found");
 				}
@@ -101,7 +101,7 @@ namespace AnimatedDecouplers
 		{
 			if (staged)
 			{
-				if (waitForAnimation && (object)anim != null)
+				if (waitForAnimation && anim != null)
 				{
 					anim.Play(animationName);
 					isDecoupling = true;
@@ -115,7 +115,7 @@ namespace AnimatedDecouplers
 		
 		private void OnVesselWasModified (Vessel v)
 		{
-			if ((object)v != null && v == vessel)
+			if (v != null && v == vessel)
 			{
 				if (!(isDecoupling || isDecoupled))
 				{
@@ -133,13 +133,13 @@ namespace AnimatedDecouplers
 		}
 
 		// TODO Consider deprecating checkForDecoupling; it should no longer be necessary
-		private void checkForDecoupling(EventReport separationData)
+		private void CheckForDecoupling(EventReport separationData)
 		{
 			if (separationData.eventType == FlightEvents.STAGESEPARATION && separationData.origin == this.part)
 			{
 				// PROBABLY got called because we decoupled, but no way to know because ModuleAnchoredDecoupler doesn't SET isDecoupled until after the event fires. 
 				OnMoving.Fire (0f, 1f);
-				if (animationName != "" && (object)anim != null && (!this.animationComplete || !this.anim.IsPlaying (animationName)))
+				if (animationName != "" && anim != null && (!this.animationComplete || !this.anim.IsPlaying (animationName)))
 				{
 					this.anim.Play (animationName);
 					this.animationComplete = true;
@@ -158,9 +158,9 @@ namespace AnimatedDecouplers
 			OnDecouple ();
 		}
 		
-		private void OnDestroy()
+		public void OnDestroy()
 		{
-			GameEvents.onStageSeparation.Remove (checkForDecoupling);
+			GameEvents.onStageSeparation.Remove (CheckForDecoupling);
 			GameEvents.onVesselWasModified.Remove (OnVesselWasModified);
 		}
 		
