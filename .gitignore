@@ -220,3 +220,7 @@ AnimatedDecouplers.sln
 AnimatedDecouplers.userprefs
 *.zip
 AnimatedDecouplers/GameData/AnimatedDecouplers/Plugins/AnimatedDecouplers.dll
+.vs/AnimatedDecouplers/v16/Server/sqlite3/db.lock
+.vs/AnimatedDecouplers/v16/Server/sqlite3/storage.ide
+.vs/AnimatedDecouplers/v16/Server/sqlite3/storage.ide-shm
+.vs/AnimatedDecouplers/v16/Server/sqlite3/storage.ide-wal
